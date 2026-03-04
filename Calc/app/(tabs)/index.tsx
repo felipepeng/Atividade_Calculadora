@@ -6,16 +6,31 @@ import { Col, Grid, Row } from "react-native-easy-grid";
 export default function Calculator() {
 
   const [display, setDisplay] = useState("0");
-  const [n1, setN1] = useState("");
-
-  var n2, resultado;
 
   function handlePress(value: string) {
     console.log(value);
-    setDisplay((prev) => (prev === "0" ? value : prev + value));
-    //setDisplay(value);
-    setN1(prev => prev + value);
-    console.log(n1);
+    
+    switch (value) {
+      case "=":
+        const resultado = eval(display);
+        setDisplay(String(resultado));
+        if(display=="") setDisplay("Pato no Tucupi");
+        break;
+      case "C":
+        setDisplay("");
+        break;
+      case "√":
+        const resultadoRaiz = Math.sqrt(Number(display))
+        setDisplay(String(resultadoRaiz));
+      break;
+      case "<-":
+        setDisplay(display.slice(0, -1));
+      break;
+
+      default:
+        setDisplay((prev) => (prev === "0" ? value : prev + value));
+        break;
+    }
   }
 
   function renderButton(label: string) {
@@ -31,12 +46,19 @@ export default function Calculator() {
 
 
   return (
-    <Grid>
-      
+    <Grid style={styles.grid}>
+
       {/* Display */}
       <Row size={1} style={styles.display}>
         <Text style={styles.displayText}>{display}</Text>
       </Row>
+
+      {/*Linha 0*/}
+      <Row size={1}>
+          <Col>{renderButton("√")}</Col>
+          <Col>{renderButton("C")}</Col>
+          <Col>{renderButton("<-")}</Col>
+        </Row>
 
       {/* Linha 1 */}
       <Row size={1}>
@@ -64,8 +86,8 @@ export default function Calculator() {
 
       {/* Linha 4 */}
       <Row size={1}>
-        <Col>{renderButton("0")}</Col>
         <Col>{renderButton(".")}</Col>
+        <Col>{renderButton("0")}</Col>
         <Col>{renderButton("=")}</Col>
         <Col>{renderButton("+")}</Col>
       </Row>
@@ -95,5 +117,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 24,
+  },
+  grid: {
+    paddingVertical: 60,
+    paddingHorizontal: 500,
   },
 });
